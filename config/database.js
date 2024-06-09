@@ -9,7 +9,7 @@ const sequelize = new Sequelize({
     username: process.env.PGUSER, // Replace with your database username
     password: process.env.PGPASSWORD, // Replace with your database password
     host: process.env.PGHOST,
-    port: 5432,
+    port: process.env.PGPORT, // Use the correct port from the .env file
     logging: false, // Disable logging to console
     define: {
         freezeTableName: true, // disable pluralization
@@ -17,3 +17,5 @@ const sequelize = new Sequelize({
 });
 
 export default sequelize;
+
+

@@ -12,7 +12,7 @@ const identify = async (req, res) => {
     // Find all contacts with the given email or phone number
     const contacts = await Contact.findAll({
       where: {
-        [Sequelize.Op.or]: [{ email }, { phoneNumber }]
+        [Sequelize.Op.or]: [{ email }, { phoneNumber: phoneNumber ? phoneNumber.toString() : null }]
       }
     });
 
@@ -23,7 +23,7 @@ const identify = async (req, res) => {
       // No existing contacts, create a new primary contact
       const newContact = await Contact.create({
         email,
-        phoneNumber,
+        phoneNumber:phoneNumber ? phoneNumber.toString() : null,
         linkPrecedence: 'primary'
       });
 
@@ -44,7 +44,7 @@ const identify = async (req, res) => {
 
       // Update primary contact if necessary
       if (!primaryContact.email) primaryContact.email = email;
-      if (!primaryContact.phoneNumber) primaryContact.phoneNumber = phoneNumber;
+      if (!primaryContact.phoneNumber) primaryContact.phoneNumber = phoneNumber ? phoneNumber.toString() : null;
       await primaryContact.save();
 
       // Link all secondary contacts to the primary contact
@@ -60,7 +60,7 @@ const identify = async (req, res) => {
       if (email && !contacts.some(contact => contact.email === email)) {
         const newSecondaryContact = await Contact.create({
           email,
-          phoneNumber,
+          phoneNumber:phoneNumber ? phoneNumber.toString() : null,
           linkedId: primaryContact.id,
           linkPrecedence: 'secondary'
         });
@@ -70,7 +70,7 @@ const identify = async (req, res) => {
       if (phoneNumber && !contacts.some(contact => contact.phoneNumber === phoneNumber)) {
         const newSecondaryContact = await Contact.create({
           email,
-          phoneNumber,
+          phoneNumber:phoneNumber ? phoneNumber.toString() : null,
           linkedId: primaryContact.id,
           linkPrecedence: 'secondary'
         });
